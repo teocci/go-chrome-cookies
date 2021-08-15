@@ -8,6 +8,7 @@ package decrypt
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"github.com/teocci/go-chrome-cookies/core/throw"
 	"syscall"
 	"unsafe"
 )
@@ -17,14 +18,14 @@ func ChromePass(key, encryptPass []byte) ([]byte, error) {
 		// remove Prefix 'v10'
 		return aesGCMDecrypt(encryptPass[15:], key, encryptPass[3:15])
 	} else {
-		return nil, errPasswordIsEmpty
+		return nil, throw.ErrorPasswordIsEmpty()
 	}
 }
 
 // aesGCMDecrypt
 // chromium > 80
 // more info here: https://tinyurl.com/nax82cpn
-func aesGCMDecrypt(crypted, key, nounce []byte) ([]byte, error) {
+func aesGCMDecrypt(encrypted, key, nonce []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func aesGCMDecrypt(crypted, key, nounce []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	origData, err := blockMode.Open(nil, nounce, crypted, nil)
+	origData, err := blockMode.Open(nil, nonce, encrypted, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -4,6 +4,7 @@
 // +build !windows,!plan9,!nacl,!darwin
 
 package browser
+
 import (
 	"crypto/sha1"
 	"github.com/godbus/dbus/v5"
@@ -30,11 +31,11 @@ const (
 
 const (
 	chromeStorageName     = "Chrome Safe Storage"
-	chromiumStorageName   = "Chromium Safe Storage"
-	edgeStorageName       = "Chromium Safe Storage"
+	chromiumStorageName   = "chromium Safe Storage"
+	edgeStorageName       = "chromium Safe Storage"
 	braveStorageName      = "Brave Safe Storage"
 	chromeBetaStorageName = "Chrome Safe Storage"
-	operaStorageName      = "Chromium Safe Storage"
+	operaStorageName      = "chromium Safe Storage"
 	vivaldiStorageName    = "Chrome Safe Storage"
 )
 
@@ -116,7 +117,7 @@ var (
 	}
 )
 
-func (c *Chromium) InitSecretKey() error {
+func InitSecretKey(c *Chromium) error {
 	// what is d-bus @https://dbus.freedesktop.org/
 	var chromeSecret []byte
 	conn, err := dbus.SessionBus()
@@ -149,7 +150,7 @@ func (c *Chromium) InitSecretKey() error {
 				logger.Error(err)
 				continue
 			}
-			if label == c.storage {
+			if label == c.GetStorage() {
 				se, err := item.GetSecret(session.Path())
 				if err != nil {
 					logger.Error(err)
@@ -160,11 +161,11 @@ func (c *Chromium) InitSecretKey() error {
 		}
 	}
 	if chromeSecret == nil {
-		return errDbusSecretIsEmpty
+		return ThrowErrorDbusSecretIsEmpty()
 	}
 	var chromeSalt = []byte("saltysalt")
 	// @https://source.chromium.org/chromium/chromium/src/+/master:components/os_crypt/os_crypt_linux.cc
 	key := pbkdf2.Key(chromeSecret, chromeSalt, 1, 16, sha1.New)
-	c.secretKey = key
+	c.SetSecretKey(key)
 	return nil
 }

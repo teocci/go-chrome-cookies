@@ -1,7 +1,7 @@
-// Package utils
+// Package filemgmt
 // Created by Teocci.
 // Author: teocci@yandex.com on 2021-Aug-12
-package utils
+package filemgmt
 
 import (
 	"archive/zip"
@@ -24,15 +24,6 @@ func IntToBool(a int) bool {
 		return false
 	}
 	return true
-}
-
-func BookMarkType(a int64) string {
-	switch a {
-	case 1:
-		return "url"
-	default:
-		return "folder"
-	}
 }
 
 func TimeStampFormat(stamp int64) time.Time {
@@ -94,12 +85,12 @@ func Compress(exportDir string) error {
 		fileName := path.Join(exportDir, f.Name())
 		fileContent, err := ioutil.ReadFile(fileName)
 		if err != nil {
-			zw.Close()
+			_ = zw.Close()
 			return err
 		}
 		_, err = fw.Write(fileContent)
 		if err != nil {
-			zw.Close()
+			_ = zw.Close()
 			return err
 		}
 		err = os.Remove(fileName)
@@ -118,4 +109,10 @@ func Compress(exportDir string) error {
 	}
 	fmt.Printf("%s Compress success, zip filename is %s \n", Prefix, zipName)
 	return nil
+}
+
+func CloseFile() func(*os.File) {
+	return func(f *os.File) {
+		_ = f.Close()
+	}
 }

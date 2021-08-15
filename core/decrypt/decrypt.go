@@ -11,18 +11,11 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/asn1"
-	"errors"
+	"github.com/teocci/go-chrome-cookies/core/throw"
 
 	"github.com/teocci/go-chrome-cookies/logger"
 
 	"golang.org/x/crypto/pbkdf2"
-)
-
-var (
-	errSecurityKeyIsEmpty = errors.New("input [security find-generic-password -wa 'Chrome'] in terminal")
-	errPasswordIsEmpty    = errors.New("password is empty")
-	errDecryptFailed      = errors.New("decrypt failed, password is empty")
-	errDecodeASN1Failed   = errors.New("decode ASN1 data failed")
 )
 
 type ASN1PBE interface {
@@ -44,7 +37,7 @@ func NewASN1PBE(b []byte) (pbe ASN1PBE, err error) {
 	if _, err := asn1.Unmarshal(b, &l); err == nil {
 		return l, nil
 	}
-	return nil, errDecodeASN1Failed
+	return nil, throw.ErrorDecodeASN1Failed()
 }
 
 //NssPBE
@@ -203,7 +196,6 @@ func PaddingZero(s []byte, l int) []byte {
 		return s
 	}
 }
-
 
 // LoginPBE
 //Login Struct

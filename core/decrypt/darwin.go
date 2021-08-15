@@ -13,7 +13,7 @@ func ChromePass(key, encryptPass []byte) ([]byte, error) {
 		var chromeIV = []byte{32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32}
 		return aes128CBCDecrypt(key, chromeIV, encryptPass[3:])
 	} else {
-		return nil, errDecryptFailed
+		return nil, throw.ErrorDecryptFailed()
 	}
 }
 

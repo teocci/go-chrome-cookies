@@ -10,10 +10,9 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"os"
-
 	"github.com/teocci/go-chrome-cookies/core/decrypt"
-	"github.com/teocci/go-chrome-cookies/utils"
+	"github.com/teocci/go-chrome-cookies/filemgmt"
+	"os"
 
 	"github.com/tidwall/gjson"
 )
@@ -28,8 +27,8 @@ const (
 	chromeKeyPath             = "/AppData/Local/Google/Chrome/User Data/Local State"
 	chromeBetaProfilePath     = "/AppData/Local/Google/Chrome Beta/User Data/*/"
 	chromeBetaKeyPath         = "/AppData/Local/Google/Chrome Beta/User Data/Local State"
-	chromiumProfilePath       = "/AppData/Local/Chromium/User Data/*/"
-	chromiumKeyPath           = "/AppData/Local/Chromium/User Data/Local State"
+	chromiumProfilePath       = "/AppData/Local/chromium/User Data/*/"
+	chromiumKeyPath           = "/AppData/Local/chromium/User Data/Local State"
 	edgeProfilePath           = "/AppData/Local/Microsoft/Edge/User Data/*/"
 	edgeKeyPath               = "/AppData/Local/Microsoft/Edge/User Data/Local State"
 	braveProfilePath          = "/AppData/Local/BraveSoftware/Brave-Browser/User Data/*/"
@@ -142,16 +141,25 @@ var (
 	errBase64DecodeFailed = errors.New("decode base64 failed")
 )
 
+func ListBrowser() []string {
+	var l []string
+	for k := range browserList {
+		l = append(l, k)
+	}
+	return l
+}
+
 // InitSecretKey with win32 DPAPI
 // conference from @https://gist.github.com/akamajoris/ed2f14d817d5514e7548
-func (c *Chromium) InitSecretKey() error {
-	if c.keyPath == "" {
+func InitSecretKey(c *Chromium) error {
+	keyPath := c.GetKeyPath()
+	if keyPath == "" {
 		return nil
 	}
-	if _, err := os.Stat(c.keyPath); os.IsNotExist(err) {
-		return fmt.Errorf("%s secret key path is empty", c.name)
+	if _, err := os.Stat(c.GetKeyPath()); os.IsNotExist(err) {
+		return fmt.Errorf("%s secret key path is empty", c.GetName())
 	}
-	keyFile, err := utils.ReadFile(c.keyPath)
+	keyFile, err := filemgmt.ReadFile(c.GetKeyPath())
 	if err != nil {
 		return err
 	}
@@ -161,7 +169,10 @@ func (c *Chromium) InitSecretKey() error {
 		if err != nil {
 			return errBase64DecodeFailed
 		}
-		c.secretKey, err = decrypt.DPApi(pureKey[5:])
+		key, err := decrypt.DPApi(pureKey[5:])
+		if key != nil {
+			c.SetSecretKey(key)
+		}
 		return err
 	}
 	return nil

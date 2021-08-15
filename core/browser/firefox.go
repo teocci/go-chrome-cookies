@@ -5,6 +5,7 @@ package browser
 
 import (
 	"github.com/teocci/go-chrome-cookies/core/data"
+	"github.com/teocci/go-chrome-cookies/core/throw"
 	"github.com/teocci/go-chrome-cookies/logger"
 	"strings"
 )
@@ -13,6 +14,34 @@ type Firefox struct {
 	name        string
 	profilePath string
 	keyPath     string
+}
+
+var firefoxItems = map[string]struct {
+	mainFile string
+	subFile  string
+	newItem  func(mainFile, subFile string) data.Item
+}{
+	data.ItemNameBookmark: {
+		mainFile: data.FirefoxDataFile,
+		newItem:  data.NewBookmarks,
+	},
+	data.ItemNameCookie: {
+		mainFile: data.FirefoxCookieFile,
+		newItem:  data.NewCookies,
+	},
+	data.ItemNameHistory: {
+		mainFile: data.FirefoxDataFile,
+		newItem:  data.NewHistoryData,
+	},
+	data.ItemNameDownload: {
+		mainFile: data.FirefoxDataFile,
+		newItem:  data.NewDownloads,
+	},
+	data.ItemNamePassword: {
+		mainFile: data.FirefoxKey4File,
+		subFile:  data.FirefoxLoginFile,
+		newItem:  data.NewFPasswords,
+	},
 }
 
 // NewFirefox return firefox browser interface
@@ -29,13 +58,13 @@ func (f *Firefox) GetAllItems() ([]data.Item, error) {
 			err       error
 		)
 		if choice.subFile != "" {
-			sub, err = getItemPath(f.profilePath, choice.subFile)
+			sub, err = GetItemPath(f.profilePath, choice.subFile)
 			if err != nil {
 				logger.Debugf("%s find %s file failed, ERR:%s", f.name, item, err)
 				continue
 			}
 		}
-		main, err = getItemPath(f.profilePath, choice.mainFile)
+		main, err = GetItemPath(f.profilePath, choice.mainFile)
 		if err != nil {
 			logger.Debugf("%s find %s file failed, ERR:%s", f.name, item, err)
 			continue
@@ -55,12 +84,12 @@ func (f *Firefox) GetItem(itemName string) (data.Item, error) {
 			err       error
 		)
 		if item.subFile != "" {
-			sub, err = getItemPath(f.profilePath, item.subFile)
+			sub, err = GetItemPath(f.profilePath, item.subFile)
 			if err != nil {
 				logger.Debugf("%s find %s file failed, ERR:%s", f.name, item.subFile, err)
 			}
 		}
-		main, err = getItemPath(f.profilePath, item.mainFile)
+		main, err = GetItemPath(f.profilePath, item.mainFile)
 		if err != nil {
 			logger.Debugf("%s find %s file failed, ERR:%s", f.name, item.mainFile, err)
 		}
@@ -68,7 +97,7 @@ func (f *Firefox) GetItem(itemName string) (data.Item, error) {
 		logger.Debugf("%s find %s file success", f.name, item.mainFile)
 		return i, nil
 	} else {
-		return nil, errItemNotSupported
+		return nil, throw.ErrorItemNotSupported()
 	}
 }
 
@@ -86,4 +115,12 @@ func (f *Firefox) GetSecretKey() []byte {
 // this method used to implement Browser interface
 func (f *Firefox) InitSecretKey() error {
 	return nil
+}
+
+func (f *Firefox) ListItems() []string {
+	var l []string
+	for k := range firefoxItems {
+		l = append(l, k)
+	}
+	return l
 }

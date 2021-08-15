@@ -22,7 +22,7 @@ const (
 	fireFoxESRProfilePath     = "/Users/*/Library/Application Support/Firefox/Profiles/*.default-esr*/"
 	chromeProfilePath         = "/Users/*/Library/Application Support/Google/Chrome/*/"
 	chromeBetaProfilePath     = "/Users/*/Library/Application Support/Google/Chrome Beta/*/"
-	chromiumProfilePath       = "/Users/*/Library/Application Support/Chromium/*/"
+	chromiumProfilePath       = "/Users/*/Library/Application Support/chromium/*/"
 	edgeProfilePath           = "/Users/*/Library/Application Support/Microsoft Edge/*/"
 	braveProfilePath          = "/Users/*/Library/Application Support/BraveSoftware/Brave-Browser/*/"
 	operaProfilePath          = "/Users/*/Library/Application Support/com.operasoftware.Opera/"
@@ -33,7 +33,7 @@ const (
 const (
 	chromeStorageName     = "Chrome"
 	chromeBetaStorageName = "Chrome"
-	chromiumStorageName   = "Chromium"
+	chromiumStorageName   = "chromium"
 	edgeStorageName       = "Microsoft Edge"
 	braveStorageName      = "Brave"
 	operaStorageName      = "Opera"
@@ -124,13 +124,13 @@ var (
 	}
 )
 
-func (c *Chromium) InitSecretKey() error {
+func InitSecretKey(c *Chromium) error {
 	var (
 		cmd            *exec.Cmd
 		stdout, stderr bytes.Buffer
 	)
 	// ➜ security find-generic-password -wa 'Chrome'
-	cmd = exec.Command("security", "find-generic-password", "-wa", c.storage)
+	cmd = exec.Command("security", "find-generic-password", "-wa", c.GetStorage())
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	err := cmd.Run()
@@ -144,11 +144,11 @@ func (c *Chromium) InitSecretKey() error {
 	temp := stdout.Bytes()
 	chromeSecret := temp[:len(temp)-1]
 	if chromeSecret == nil {
-		return errChromeSecretIsEmpty
+		return ThrowErrorChromeSecretIsEmpty()
 	}
 	var chromeSalt = []byte("saltysalt")
 	// @https://source.chromium.org/chromium/chromium/src/+/master:components/os_crypt/os_crypt_mac.mm;l=157
 	key := pbkdf2.Key(chromeSecret, chromeSalt, 1003, 16, sha1.New)
-	c.secretKey = key
+	c.SetSecretKey(key)
 	return nil
 }

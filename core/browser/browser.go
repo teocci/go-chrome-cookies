@@ -4,32 +4,14 @@
 package browser
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/teocci/go-chrome-cookies/core/data"
+	"github.com/teocci/go-chrome-cookies/core/throw"
 	"github.com/teocci/go-chrome-cookies/logger"
-)
-
-const (
-	chromeName         = "Chrome"
-	chromeBetaName     = "Chrome Beta"
-	chromiumName       = "Chromium"
-	edgeName           = "Microsoft Edge"
-	firefoxName        = "Firefox"
-	firefoxBetaName    = "Firefox Beta"
-	firefoxDevName     = "Firefox Dev"
-	firefoxNightlyName = "Firefox Nightly"
-	firefoxESRName     = "Firefox ESR"
-	speed360Name       = "360speed"
-	qqBrowserName      = "qq"
-	braveName          = "Brave"
-	operaName          = "Opera"
-	operaGXName        = "OperaGX"
-	vivaldiName        = "Vivaldi"
 )
 
 type Browser interface {
@@ -47,82 +29,10 @@ type Browser interface {
 
 	// GetItem return single one from the password|bookmark|cookie|history
 	GetItem(itemName string) (data.Item, error)
+
+	// ListItems return list of items
+	ListItems() []string
 }
-
-const (
-	cookie     = "cookie"
-	history    = "history"
-	bookmark   = "bookmark"
-	download   = "download"
-	password   = "password"
-	creditCard = "credit-card"
-)
-
-var (
-	errItemNotSupported    = errors.New(`item not supported, default is "all", choose from history|download|password|bookmark|cookie`)
-	errBrowserNotSupported = errors.New("browser not supported")
-	errChromeSecretIsEmpty = errors.New("chrome secret is empty")
-	errDbusSecretIsEmpty   = errors.New("dbus secret key is empty")
-)
-
-var (
-	chromiumItems = map[string]struct {
-		mainFile string
-		newItem  func(mainFile, subFile string) data.Item
-	}{
-		bookmark: {
-			mainFile: data.ChromeBookmarkFile,
-			newItem:  data.NewBookmarks,
-		},
-		cookie: {
-			mainFile: data.ChromeCookieFile,
-			newItem:  data.NewCookies,
-		},
-		history: {
-			mainFile: data.ChromeHistoryFile,
-			newItem:  data.NewHistoryData,
-		},
-		download: {
-			mainFile: data.ChromeDownloadFile,
-			newItem:  data.NewDownloads,
-		},
-		password: {
-			mainFile: data.ChromePasswordFile,
-			newItem:  data.NewCPasswords,
-		},
-		creditCard: {
-			mainFile: data.ChromeCreditFile,
-			newItem:  data.NewCCards,
-		},
-	}
-	firefoxItems = map[string]struct {
-		mainFile string
-		subFile  string
-		newItem  func(mainFile, subFile string) data.Item
-	}{
-		bookmark: {
-			mainFile: data.FirefoxDataFile,
-			newItem:  data.NewBookmarks,
-		},
-		cookie: {
-			mainFile: data.FirefoxCookieFile,
-			newItem:  data.NewCookies,
-		},
-		history: {
-			mainFile: data.FirefoxDataFile,
-			newItem:  data.NewHistoryData,
-		},
-		download: {
-			mainFile: data.FirefoxDataFile,
-			newItem:  data.NewDownloads,
-		},
-		password: {
-			mainFile: data.FirefoxKey4File,
-			subFile:  data.FirefoxLoginFile,
-			newItem:  data.NewFPasswords,
-		},
-	}
-)
 
 // PickBrowser return a list of browser interface
 func PickBrowser(name string) ([]Browser, error) {
@@ -142,11 +52,11 @@ func PickBrowser(name string) ([]Browser, error) {
 		browsers = append(browsers, b)
 		return browsers, err
 	}
-	return nil, errBrowserNotSupported
+	return nil, throw.ErrorBrowserNotSupported()
 }
 
-// PickCustomBrowser pick single browser with custom browser profile path and key file path (windows only).
-// If custom key file path is empty, but the current browser requires key file (chromium for windows version > 80)
+// PickCustomBrowser pick single browser with custom browser profile path and key file path (Windows only).
+// If custom key file path is empty, but the current browser requires key file (chromium for Windows version > 80)
 // key file path will be automatically found in the profile path's parent directory.
 func PickCustomBrowser(browserName, cusProfile, cusKey string) ([]Browser, error) {
 	var (
@@ -180,7 +90,9 @@ func PickCustomBrowser(browserName, cusProfile, cusKey string) ([]Browser, error
 	}
 }
 
-func getItemPath(profilePath, file string) (string, error) {
+// GetItemPath try to get item file path with the browser's profile path
+// default key file path is in the parent directory of the profile dir, and name is [Local State]
+func GetItemPath(profilePath, file string) (string, error) {
 	p, err := filepath.Glob(filepath.Join(profilePath, file))
 	if err != nil {
 		return "", err
@@ -202,7 +114,7 @@ func getKeyPath(profilePath string) (string, error) {
 	return keyPath, nil
 }
 
-// check key file path is exist
+// checkKeyPath check if key file path exist
 func checkKeyPath(keyPath string) error {
 	if _, err := os.Stat(keyPath); os.IsNotExist(err) {
 		return fmt.Errorf("secret key path not exist, please check %s", keyPath)
@@ -224,20 +136,4 @@ func getParentDirectory(dir string) string {
 		return string([]rune(dir)[:length])
 	}
 	return ""
-}
-
-func ListBrowser() []string {
-	var l []string
-	for k := range browserList {
-		l = append(l, k)
-	}
-	return l
-}
-
-func ListItem() []string {
-	var l []string
-	for k := range chromiumItems {
-		l = append(l, k)
-	}
-	return l
 }

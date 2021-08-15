@@ -10,6 +10,13 @@ import (
 	"os"
 )
 
+const callDepth = 3
+
+const (
+	levelDebugName = "debug"
+	levelErrorName = "error"
+)
+
 type Level int
 
 const (
@@ -21,9 +28,9 @@ const (
 func (l Level) String() string {
 	switch l {
 	case LevelDebug:
-		return "debug"
+		return levelDebugName
 	case LevelError:
-		return "error"
+		return levelErrorName
 	}
 	return ""
 }
@@ -31,8 +38,8 @@ func (l Level) String() string {
 var (
 	formatLogger *Logger
 	levelMap     = map[string]Level{
-		"debug": LevelDebug,
-		"error": LevelError,
+		levelDebugName: LevelDebug,
+		levelErrorName: LevelError,
 	}
 )
 
@@ -42,17 +49,17 @@ func InitLog(l string) {
 
 type Logger struct {
 	level Level
-	l     *log.Logger
+	log   *log.Logger
 }
 
 func newLog(w io.Writer) *Logger {
 	return &Logger{
-		l: log.New(w, "", 0),
+		log: log.New(w, "", 0),
 	}
 }
 
 func (l *Logger) setFlags(flag int) *Logger {
-	l.l.SetFlags(flag)
+	l.log.SetFlags(flag)
 	return l
 }
 
@@ -65,7 +72,7 @@ func (l *Logger) doLog(level Level, v ...interface{}) bool {
 	if level < l.level {
 		return false
 	}
-	l.l.Output(3, level.String()+" "+fmt.Sprintln(v...))
+	_ = l.log.Output(callDepth, level.String()+" "+fmt.Sprintln(v...))
 	return true
 }
 
@@ -73,7 +80,7 @@ func (l *Logger) doLogf(level Level, format string, v ...interface{}) bool {
 	if level < l.level {
 		return false
 	}
-	l.l.Output(3, level.String()+" "+fmt.Sprintln(fmt.Sprintf(format, v...)))
+	_ = l.log.Output(callDepth, level.String()+" "+fmt.Sprintln(fmt.Sprintf(format, v...)))
 	return true
 }
 
