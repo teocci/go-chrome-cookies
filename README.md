@@ -55,7 +55,7 @@ Based on Apple's security policy, some browsers **require a current user passwor
 
 ### Install
 
-Installation of hack-browser-data is dead-simple, just download [the release][3] and build it.
+Installation of `go-chrome-cookies` is dead-simple, just download [the release][3] and build it.
 
 > In some situations, this security tool will be treated as a virus by Windows Defender or other antivirus software and can not be executed. The code is all open source, you can modify and compile by yourself.
 
