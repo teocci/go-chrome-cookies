@@ -4,6 +4,7 @@
 package browser
 
 import (
+	"fmt"
 	"github.com/teocci/go-chrome-cookies/core/data"
 	"github.com/teocci/go-chrome-cookies/core/throw"
 	"github.com/teocci/go-chrome-cookies/logger"
@@ -94,7 +95,12 @@ func (c *Chromium) GetAllItems() ([]data.Item, error) {
 func (c *Chromium) GetItem(itemName string) (data.Item, error) {
 	itemName = strings.ToLower(itemName)
 	if item, ok := chromiumItems[itemName]; ok {
-		m, err := GetItemPath(c.profilePath, item.mainFile)
+		path := c.profilePath
+		if itemName == "cookie" {
+			path = fmt.Sprintf("%s/Network", c.profilePath)
+		}
+
+		m, err := GetItemPath(path, item.mainFile)
 		if err != nil {
 			logger.Debugf("%s find %s file failed, ERR:%s", c.name, item.mainFile, err)
 		}

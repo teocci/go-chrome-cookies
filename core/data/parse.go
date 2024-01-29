@@ -4,12 +4,12 @@
 package data
 
 import (
-	"github.com/teocci/go-chrome-cookies/logger"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/teocci/go-chrome-cookies/logger"
 )
 
 const (
@@ -76,11 +76,11 @@ func CopyToLocalPath(src, dst string) error {
 			}
 		}
 	}
-	sourceFile, err := ioutil.ReadFile(src)
+	sourceFile, err := os.ReadFile(src)
 	if err != nil {
 		logger.Debug(err.Error())
 	}
-	err = ioutil.WriteFile(dst, sourceFile, 0777)
+	err = os.WriteFile(dst, sourceFile, 0777)
 	if err != nil {
 		logger.Debug(err.Error())
 	}

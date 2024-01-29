@@ -7,48 +7,48 @@
 ## Supported Browser
 
 ### Windows
-| Browser                             | Password | Cookie | Bookmark | History |
-| :---------------------------------- | :------: | :----: | :------: | :-----: |
-| Google Chrome |    ✓    |   ✓   |    ✓    |    ✓    |
-| Google Chrome Beta |    ✓    |   ✓   |    ✓    |    ✓    |
-| Chromium |    ✓    |    ✓    |    ✓    |    ✓    |
-| Microsoft Edge |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Beta |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Dev |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox ESR |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Nightly |    ✓    |   ✓   |    ✓    |    ✓    |
+| Browser            | Password | Cookie | Bookmark | History |
+|:-------------------|:--------:|:------:|:--------:|:-------:|
+| Google Chrome      |    ✓     |   ✓    |    ✓     |    ✓    |
+| Google Chrome Beta |    ✓     |   ✓    |    ✓     |    ✓    |
+| Chromium           |    ✓     |   ✓    |    ✓     |    ✓    |
+| Microsoft Edge     |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox            |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Beta       |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Dev        |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox ESR        |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Nightly    |    ✓     |   ✓    |    ✓     |    ✓    |
 
 
 ### MacOS
 
 Based on Apple's security policy, some browsers **require a current user password** to decrypt.
 
-| Browser                             | Password | Cookie | Bookmark | History |
-| :---------------------------------- | :------: | :----: | :------: | :-----: |
-| Google Chrome |    ✓    |   ✓   |    ✓    |    ✓    |
-| Google Chrome Beta |    ✓    |   ✓   |    ✓    |    ✓    |
-| Chromium |    ✓    |    ✓    |    ✓    |    ✓    |
-| Microsoft Edge |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Beta |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Dev |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox ESR |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Nightly |    ✓    |   ✓   |    ✓    |    ✓    |
+| Browser            | Password | Cookie | Bookmark | History |
+|:-------------------|:--------:|:------:|:--------:|:-------:|
+| Google Chrome      |    ✓     |   ✓    |    ✓     |    ✓    |
+| Google Chrome Beta |    ✓     |   ✓    |    ✓     |    ✓    |
+| Chromium           |    ✓     |   ✓    |    ✓     |    ✓    |
+| Microsoft Edge     |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox            |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Beta       |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Dev        |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox ESR        |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Nightly    |    ✓     |   ✓    |    ✓     |    ✓    |
 
 ### Linux
 
-| Browser                             | Password | Cookie | Bookmark | History |
-| :---------------------------------- | :------: | :----: | :------: | :-----: |
-| Google Chrome |    ✓    |   ✓   |    ✓    |    ✓    |
-| Google Chrome Beta |    ✓    |   ✓   |    ✓    |    ✓    |
-| Chromium |    ✓    |    ✓    |    ✓    |    ✓    |
-| Microsoft Edge Dev |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Beta |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Dev |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox ESR |    ✓    |   ✓   |    ✓    |    ✓    |
-| Firefox Nightly |    ✓    |   ✓   |    ✓    |    ✓    |
+| Browser            | Password | Cookie | Bookmark | History |
+|:-------------------|:--------:|:------:|:--------:|:-------:|
+| Google Chrome      |    ✓     |   ✓    |    ✓     |    ✓    |
+| Google Chrome Beta |    ✓     |   ✓    |    ✓     |    ✓    |
+| Chromium           |    ✓     |   ✓    |    ✓     |    ✓    |
+| Microsoft Edge Dev |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox            |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Beta       |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Dev        |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox ESR        |    ✓     |   ✓    |    ✓     |    ✓    |
+| Firefox Nightly    |    ✓     |   ✓    |    ✓     |    ✓    |
 
 
 ## Getting started
@@ -61,14 +61,29 @@ Installation of `go-chrome-cookies` is dead-simple, just download [the release][
 
 ### Building from source
 
-support `go 1.14+`
+support `go 1.20+`
 
 ```bash
 git clone https://github.com/teocci/go-chrome-cookies
 cd go-chrome-cookies
 go get -v -t -d ./...
-go build
+go test .\core\browser
 ```
+
+If you want to update the code, you can use the following command to update the code.
+
+```bash
+git pull
+go get -u
+go mod tidy
+go test .\core\browser
+```
+
+### Usage
+
+Remember to close the browser before using this tool, or you will get a `ERROR_SHARING_VIOLATION` error.
+
+> internal/syscall/windows.ERROR_SHARING_VIOLATION (32)
 
 [1]: https://pkg.go.dev/badge/github.com/teocci/go-chrome-cookies.svg
 [2]: https://pkg.go.dev/github.com/teocci/go-chrome-cookies

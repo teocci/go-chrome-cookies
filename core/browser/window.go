@@ -2,6 +2,7 @@
 // Created by Teocci.
 // Author: teocci@yandex.com on 2021-Aug-12
 
+//go:build !linux && !plan9 && !nacl && !darwin
 // +build !linux,!plan9,!nacl,!darwin
 
 package browser

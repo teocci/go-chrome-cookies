@@ -31,6 +31,8 @@ func (l Level) String() string {
 		return levelDebugName
 	case LevelError:
 		return levelErrorName
+	default:
+		panic("unhandled default case")
 	}
 	return ""
 }
